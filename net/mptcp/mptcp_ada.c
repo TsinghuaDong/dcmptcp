@@ -60,7 +60,7 @@ static struct ada_cb_data *ada_get_cb_data(struct tcp_sock *tp)
 static struct sk_buff *ada_mptcp_rcv_buf_optimization(struct sock *sk, int penal)
 {
 	struct sock *meta_sk;
-	const struct tcp_sock *tp = tcp_sk(sk);
+	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_sock *tp_it;
 	struct sk_buff *skb_head;
 	struct ada_sock_data *sk_data = ada_get_sock_data(tp);
@@ -282,10 +282,15 @@ static struct sk_buff *ada_onesubflow_next_segment(struct sock *meta_sk,
     }
         
     *subsk = (struct sock *)(cb_data->first_subflow);
-    if (!mptcp_is_available(cb_data->first_subflow, skb, false)) {
+    if (!mptcp_is_available((struct sock *)cb_data->first_subflow, skb, false)) {
         *subsk = NULL;
         return NULL;
     } else {
+        unsigned int mss_now;
+        struct tcp_sock *subtp;
+        u16 gso_max_segs;
+        u32 max_len, max_segs, window, needed;
+        
         subtp = tcp_sk(*subsk);
         mss_now = tcp_current_mss(*subsk);
 

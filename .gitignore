@@ -41,6 +41,7 @@
 *.xz
 Module.symvers
 modules.builtin
+*.udb
 
 #
 # Top-level generic files

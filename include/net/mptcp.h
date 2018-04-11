@@ -256,6 +256,11 @@ struct mptcp_sched_ops {
 	struct module		*owner;
 };
 
+
+struct defsched_priv {
+	u32	last_rbuf_opti;
+};
+
 struct mptcp_cb {
 	/* list of sockets in this multipath connection */
 	struct tcp_sock *connection_list;
@@ -283,7 +288,7 @@ struct mptcp_cb {
 	u8 cnt_subflows;
 	u8 cnt_established;
 
-#define MPTCP_SCHED_DATA_SIZE 8
+#define MPTCP_SCHED_DATA_SIZE 16
 	u8 mptcp_sched[MPTCP_SCHED_DATA_SIZE] __aligned(8);
 	struct mptcp_sched_ops *sched_ops;
 
@@ -911,6 +916,9 @@ bool subflow_is_backup(const struct tcp_sock *tp);
 struct sock *get_available_subflow(struct sock *meta_sk, struct sk_buff *skb,
 				   bool zero_wnd_test);
 extern struct mptcp_sched_ops mptcp_sched_default;
+struct defsched_priv *defsched_get_priv(const struct tcp_sock *tp);
+struct sk_buff *mptcp_next_segment(struct sock *meta_sk, int *reinject,
+                                   struct sock **subsk, unsigned int *limit);
 
 /* Initializes function-pointers and MPTCP-flags */
 static inline void mptcp_init_tcp_sock(struct sock *sk)

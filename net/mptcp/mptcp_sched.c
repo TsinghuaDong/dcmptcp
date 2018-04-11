@@ -6,14 +6,12 @@
 static DEFINE_SPINLOCK(mptcp_sched_list_lock);
 static LIST_HEAD(mptcp_sched_list);
 
-struct defsched_priv {
-	u32	last_rbuf_opti;
-};
 
-static struct defsched_priv *defsched_get_priv(const struct tcp_sock *tp)
+struct defsched_priv *defsched_get_priv(const struct tcp_sock *tp)
 {
 	return (struct defsched_priv *)&tp->mptcp->mptcp_sched[0];
 }
+EXPORT_SYMBOL_GPL(defsched_get_priv);
 
 bool mptcp_is_def_unavailable(struct sock *sk)
 {
@@ -378,7 +376,7 @@ static struct sk_buff *__mptcp_next_segment(struct sock *meta_sk, int *reinject)
 	return skb;
 }
 
-static struct sk_buff *mptcp_next_segment(struct sock *meta_sk,
+struct sk_buff *mptcp_next_segment(struct sock *meta_sk,
 					  int *reinject,
 					  struct sock **subsk,
 					  unsigned int *limit)
@@ -442,6 +440,7 @@ static struct sk_buff *mptcp_next_segment(struct sock *meta_sk,
 
 	return skb;
 }
+EXPORT_SYMBOL_GPL(mptcp_next_segment);
 
 static void defsched_init(struct sock *sk)
 {

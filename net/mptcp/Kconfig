@@ -127,7 +127,7 @@ choice
 		bool "ADA" if MPTCP_ADA=y
 		---help---
 		  This is the ADA scheduler, sending a short flow with only one
-          subflow.
+		  subflow.
 
 endchoice
 endif

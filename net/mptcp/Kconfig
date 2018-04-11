@@ -97,7 +97,7 @@ config MPTCP_ADA
 	depends on (MPTCP=y)
 	---help---
 	  This scheduler uses the first subflow to send a short flow, in order to reduce
-      FCT in data center networks for inter rack many-to-one traffic.
+	  FCT in data center networks for inter rack many-to-one traffic.
 
 choice
 	prompt "Default MPTCP Scheduler"

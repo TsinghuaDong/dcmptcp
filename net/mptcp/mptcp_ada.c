@@ -352,7 +352,7 @@ static struct sk_buff *ada_next_segment(struct sock *meta_sk,
 	if (cb_data->sched_mod == ONESUBFLOW_MOD) {
 		if (!before(meta_tp->snd_nxt, cb_data->seq_threshold)) {
 			mptcp_for_each_sk(mpcb, tmp_sk) {
-				struct dc_sock_data *sk_data = ada_get_sock_data(tcp_sk(tmp_sk));
+				struct ada_sock_data *sk_data = ada_get_sock_data(tcp_sk(tmp_sk));
 				sk_data->last_rbuf_opti = tcp_time_stamp; /* Real initialization */
 				/* dcmptcp: debug */
 				mptcp_debug("%s: alert pi:%u %p lr:%u sfn:%u\n",
@@ -404,9 +404,9 @@ static struct sock *ada_get_subflow(struct sock *meta_sk,
 		return get_available_subflow(meta_sk, skb, zero_wnd_test);
 	} else {
         if (!cb_data->first_subflow) {
-            cb_data->first_subflow = mpcb->connection_list;
+            cb_data->first_subflow = tcp_sk(meta_sk)->mpcb->connection_list;
         }
-		return cb_data->first_subflow;
+		return (struct sock *)cb_data->first_subflow;
 	}
 }
 

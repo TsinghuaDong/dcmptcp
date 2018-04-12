@@ -347,8 +347,9 @@ static struct sk_buff *ada_next_segment(struct sock *meta_sk,
 		cb_data->seq_threshold = meta_tp->snd_nxt + ADA_th * 1024;
 
 		/* dcmptcp: debug */
-		mptcp_debug("%s: mod %u th %u token %#x\n",
-                    __func__ , cb_data->sched_mod, cb_data->seq_threshold, mpcb->mptcp_loc_token);
+		mptcp_debug("%s: mod %u th %u esfn:%u sfn:%u token %#x\n",
+                    __func__ , cb_data->sched_mod, cb_data->seq_threshold,
+                    mpcb->cnt_established, mpcb->cnt_subflows, mpcb->mptcp_loc_token);
 
 		return ada_onesubflow_next_segment(meta_sk, reinject, subsk, limit);
 	}
@@ -359,9 +360,10 @@ static struct sk_buff *ada_next_segment(struct sock *meta_sk,
 				struct ada_sock_data *sk_data = ada_get_sock_data(tcp_sk(tmp_sk));
 				sk_data->last_rbuf_opti = tcp_jiffies32; /* Real initialization */
 				/* dcmptcp: debug */
-				mptcp_debug("%s: alert pi:%u %p lr:%u sfn:%u\n",
+				mptcp_debug("%s: alert pi:%u %p lr:%u esfn:%u sfn:%u token %#x\n",
                             __func__ , tcp_sk(tmp_sk)->mptcp->path_index,
-                            sk_data, sk_data->last_rbuf_opti, mpcb->cnt_subflows);
+                            sk_data, sk_data->last_rbuf_opti, mpcb->cnt_established,
+                            mpcb->cnt_subflows, mpcb->mptcp_loc_token);
 			}
 			cb_data->sched_mod = DEFAULT_MOD;
 

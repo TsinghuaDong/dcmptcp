@@ -38,16 +38,6 @@ static struct ada_cb_data *ada_get_cb_data(struct tcp_sock *tp)
 	return (struct ada_cb_data *)&tp->mpcb->mptcp_sched[0];
 }
 
-
-/* In DEFAULT_MOD, ADA degrades to LowRTT. However, LowRTT employs private data 
- * to choose the next segment, so I can't just call mptcp_next_segment. This 
- * makes the code look ugly. ada_mptcp_rcv_buf_optimization, ada__mptcp_next_segment
- * and ada_default_next_segment are copied from mptcp_sched.c with minor modifications.
- * I need to think about how to make mptcp_next_segment and struct defsched_priv
- * accessible by other scheduler, like get_available_subflow.
- * Maybe I can put all these functions and struct defsched_priv into net/mptcp.h...
- */
-
 static struct sk_buff *ada_onesubflow_next_segment(struct sock *meta_sk,
         int *reinject,
         struct sock **subsk,

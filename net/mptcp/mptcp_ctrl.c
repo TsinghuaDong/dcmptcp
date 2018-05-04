@@ -71,6 +71,7 @@ int sysctl_mptcp_checksum __read_mostly = 1;
 int sysctl_mptcp_debug __read_mostly;
 EXPORT_SYMBOL(sysctl_mptcp_debug);
 int sysctl_mptcp_syn_retries __read_mostly = 3;
+int sysctl_mptcp_fact __read_mostly = 0;
 
 bool mptcp_init_failed __read_mostly;
 
@@ -164,6 +165,13 @@ static struct ctl_table mptcp_table[] = {
 		.mode		= 0644,
 		.maxlen		= MPTCP_SCHED_NAME_MAX,
 		.proc_handler	= proc_mptcp_scheduler,
+	},
+    {
+		.procname = "mptcp_fact",
+		.data = &sysctl_mptcp_fact,
+		.maxlen = sizeof(int),
+		.mode = 0644,
+		.proc_handler = &proc_dointvec
 	},
 	{ }
 };
@@ -2394,6 +2402,12 @@ int mptcp_conn_request(struct sock *sk, struct sk_buff *skb)
 
 	if (!sock_flag(sk, SOCK_MPTCP))
 		mopt.saw_mpc = 0;
+
+    if (TCP_SKB_CB(skb)->ip_dsfield == 128 && sysctl_mptcp_fact) {
+        mopt.saw_mpc = 0;
+        mptcp_debug("%s: saw_mpc changed! sk:%p saw_mpc:%u tos:%u\n", __func__,
+                    (void *)sk, mopt.saw_mpc, TCP_SKB_CB(skb)->ip_dsfield);
+    }
 
 	if (skb->protocol == htons(ETH_P_IP)) {
 		if (mopt.saw_mpc) {

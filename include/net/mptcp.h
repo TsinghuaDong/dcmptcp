@@ -202,6 +202,9 @@ struct mptcp_tcp_sock {
 
 	/* HMAC of the third ack */
 	char sender_mac[20];
+
+    /* The LI_CX tag used for DCMPTCP SHARE */
+    u8 dcmptcp_li_cx;
 };
 
 struct mptcp_tw {
@@ -666,6 +669,7 @@ extern int sysctl_mptcp_checksum;
 extern int sysctl_mptcp_debug;
 extern int sysctl_mptcp_syn_retries;
 extern int sysctl_mptcp_fact;
+extern int sysctl_mptcp_share;
 
 extern struct workqueue_struct *mptcp_wq;
 

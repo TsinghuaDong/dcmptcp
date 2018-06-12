@@ -706,6 +706,14 @@ config TCP_CONG_BALIA
 	---help---
 	Multipath TCP Balanced Linked Adaptation Congestion Control
 	To enable it, just put 'balia' in tcp_congestion_control
+    
+config TCP_CONG_SHARE
+	tristate "MPTCP SHARE CONGESTION CONTROL"
+	depends on MPTCP
+	default n
+	---help---
+	Signal sHAREd Congestion Control
+	To enable it, just put 'share' in tcp_congestion_control
 
 choice
 	prompt "Default TCP congestion control"

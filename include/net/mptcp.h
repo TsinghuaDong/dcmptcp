@@ -204,7 +204,7 @@ struct mptcp_tcp_sock {
 	char sender_mac[20];
 
     /* The LI_CX tag used for DCMPTCP SHARE */
-    u8 dcmptcp_li_cx;
+    u8 dcmptcp_li;
 };
 
 struct mptcp_tw {

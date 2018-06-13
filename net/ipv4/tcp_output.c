@@ -1126,8 +1126,8 @@ int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 	}
 
     if (sysctl_mptcp_share && tp->mptcp && tp->mpcb) {
-        th->res1 = tp->mptcp->dcmptcp_li_cx >> 3;
-        mptcp_debug("%s:%#x pi: %d li_cx sent back:%u seq:%u end_seq:%u\n", __func__, 
+        th->res1 = tp->mptcp->dcmptcp_li >> 3;
+        mptcp_debug("%s:%#x pi: %d li sent back:%u seq:%u end_seq:%u\n", __func__, 
                     tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, th->res1,
                    tcb->seq, tcb->end_seq);
         if (tcb->seq == tcb->end_seq) {

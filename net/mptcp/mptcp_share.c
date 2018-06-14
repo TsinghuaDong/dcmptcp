@@ -368,8 +368,8 @@ static u32 share_ssthresh(struct sock *sk)
 {
 	const struct tcp_sock *tp = tcp_sk(sk);
     mptcp_debug("%s:%#x pi: %d ssth called:%u\n", __func__,
-                tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, tp->mptcp->dcmptcp_cx);
-	return max(tp->snd_cwnd >> 1U, 2U);
+                tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, (tp->mptcp->dcmptcp_cx >> 3));
+    return max(tp->snd_cwnd - ((tp->snd_cwnd * (tp->mptcp->dcmptcp_cx >> 3)) >> 5U), 2U);
 }
 
 static struct tcp_congestion_ops share __read_mostly = {

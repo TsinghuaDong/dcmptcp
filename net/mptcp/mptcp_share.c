@@ -367,7 +367,8 @@ static void share_cwnd_event(struct sock *sk, enum tcp_ca_event ev)
 static u32 share_ssthresh(struct sock *sk)
 {
 	const struct tcp_sock *tp = tcp_sk(sk);
-    /* if (ecn_flag) */
+    mptcp_debug("%s:%#x pi: %d ssth called:%u\n", __func__,
+                tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, tp->mptcp->dcmptcp_cx);
 	return max(tp->snd_cwnd >> 1U, 2U);
 }
 

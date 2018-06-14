@@ -1126,16 +1126,17 @@ int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 	}
 
     if (sysctl_mptcp_share && tp->mptcp && tp->mpcb) {
-        th->res1 = tp->mptcp->dcmptcp_li >> 3;
-        mptcp_debug("%s:%#x pi: %d li sent back:%u seq:%u end_seq:%u\n", __func__, 
-                    tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, th->res1,
-                   tcb->seq, tcb->end_seq);
         if (tcb->seq == tcb->end_seq) {
             inet_sk(sk)->tos |= 4;
             mptcp_debug("%s:fb_tag marked!\n", __func__);
+            th->res1 = tp->mptcp->dcmptcp_li >> 3;
+            mptcp_debug("%s:%#x pi: %d li sent back:%u seq:%u end_seq:%u\n", __func__, 
+                        tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, th->res1,
+                       tcb->seq, tcb->end_seq);
         } else {
-            inet_sk(sk)->tos &= 0xfb;
+            inet_sk(sk)->tos &= 0x83;
             mptcp_debug("%s:fb_tag set to 0!\n", __func__);
+            th->res1 = 0;
         }
     }
 #ifdef CONFIG_TCP_MD5SIG

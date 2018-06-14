@@ -205,6 +205,7 @@ struct mptcp_tcp_sock {
 
     /* The LI_CX tag used for DCMPTCP SHARE */
     u8 dcmptcp_li;
+    u8 dcmptcp_cx;
 };
 
 struct mptcp_tw {

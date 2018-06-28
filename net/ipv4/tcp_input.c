@@ -278,6 +278,13 @@ static void tcp_ecn_rcv_syn(struct tcp_sock *tp, const struct tcphdr *th)
 
 static bool tcp_ecn_rcv_ecn_echo(const struct tcp_sock *tp, const struct tcphdr *th)
 {
+    if ((mptcp(tp)) && tp->mptcp) {
+        if (sysctl_mptcp_share && tp->mptcp->dcmptcp_cx != 0 && !th->syn && (tp->ecn_flags & TCP_ECN_OK)) {
+            mptcp_debug("%s:%#x pi: %d ece manually added:%u\n", __func__,
+                        tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, tp->mptcp->dcmptcp_cx);            
+            return true;
+        }
+    }
 	if (th->ece && !th->syn && (tp->ecn_flags & TCP_ECN_OK))
 		return true;
 	return false;

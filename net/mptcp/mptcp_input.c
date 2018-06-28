@@ -2132,6 +2132,24 @@ bool mptcp_handle_options(struct sock *sk, const struct tcphdr *th,
 		return true;
 	}
 
+    /* Save the LI_CX tag for DCMPTCP SHARE */
+    if (sysctl_mptcp_share) {
+        if ((TCP_SKB_CB(skb)->ip_dsfield & 0x78) && !(TCP_SKB_CB(skb)->ip_dsfield & 0x4)) {
+            tp->mptcp->dcmptcp_li = TCP_SKB_CB(skb)->ip_dsfield & 0x78;
+            mptcp_debug("%s:%#x pi: %d li may updated:%u\n", __func__,
+                        tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, tp->mptcp->dcmptcp_li);
+        }
+
+        if (TCP_SKB_CB(skb)->ip_dsfield & 0x4) {
+            tp->mptcp->dcmptcp_cx = TCP_SKB_CB(skb)->ip_dsfield & 0x78;
+            mptcp_debug("%s:%#x pi: %d cx may updated:%u\n", __func__,
+                        tp->mpcb->mptcp_loc_token, tp->mptcp->path_index, tp->mptcp->dcmptcp_cx);
+            /*if (tp->mptcp->dcmptcp_cx != 0) {
+                th->ece = 1;
+            }*/
+        }
+    }
+
 	/* We have to acknowledge retransmissions of the third
 	 * ack.
 	 */
